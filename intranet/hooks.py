@@ -1,8 +1,8 @@
 app_name = "intranet"
-app_title = "intranet"
+app_title = "Intranet"
 app_publisher = "hopeson"
 app_description = "custom app for intranet"
-app_email = "hopeson@anther.tech"
+app_email = "anther.tech.com"
 app_license = "mit"
 
 # Apps
