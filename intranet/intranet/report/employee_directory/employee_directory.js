@@ -11,5 +11,18 @@ frappe.query_reports["Employee Directory"] = {
       fieldtype: "Data",
       reqd: 0,
     }
-  ]
+  ],
+  onload: function(report) {
+    if (!$('.custom-breadcrumb').length) {
+      $('.page-head').prepend(`
+        <div class="custom-breadcrumb" style="margin-bottom:10px; float: right; margin-right: 15px; white-space: nowrap;">
+          <a href="/app/home">Home</a> / <span>Employee Directory</span>
+        </div>
+      `);
+    }
+  }
 };
+
+
+
+
