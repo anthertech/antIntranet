@@ -1,9 +1,9 @@
-app_name = "intranet"
+app_name = "Intranet"
 app_title = "Intranet"
-app_publisher = "hopeson"
-app_description = "custom app for intranet"
-app_email = "anther.tech.com"
-app_license = "mit"
+app_publisher = "Anther Technologies Pvt. Ltd."
+app_description = "intranet"
+app_email = "anther.tech"
+app_license = "MIT"
 
 # Apps
 # ------------------
@@ -242,3 +242,13 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+fixtures = [
+    {
+        "doctype": "Custom HTML Block",
+        "filters": [["name", "in", ["Intranet"]]]
+    },
+    {
+        "doctype": "Workspace",
+        "filters": [["name", "in", ["Home"]]]
+    }
+]
