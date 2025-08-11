@@ -136,29 +136,52 @@ def get_all_employee_details():
         "date_of_birth",
         "date_of_joining",
         "designation",
-        "company"
+        "company",
+        "status"  # ✅ Include status so frontend can also see it if needed
     ]
 
+    filters = {"status": "Active"}  # ✅ Only Active employees
+
     if "Employee" in roles:
-        # Employees see all Employee records, ignoring permission checks
         employees = frappe.db.get_list(
             "Employee",
             fields=fields,
+            filters=filters,
             order_by="employee_name asc",
             limit_page_length=1000,
             ignore_permissions=True
         )
     else:
-        # Other roles: default permission behavior applies
         employees = frappe.get_list(
             "Employee",
             fields=fields,
+            filters=filters,
             order_by="employee_name asc",
             limit_page_length=1000
         )
 
     return employees
 
+
+
+
+import frappe
+
+@frappe.whitelist()
+def get_open_jobs_with_applicant_count(limit=10):
+    # Fetch open job openings
+    jobs = frappe.get_all("Job Opening",
+        filters={"status": "Open"},
+        fields=["name", "job_title", "designation", "department", "posted_on", "employment_type", "location", "closes_on"],
+        limit_page_length=int(limit),
+        order_by="posted_on desc"
+    )
+
+    # For each job, count applicants where job_title (in Job Applicant) matches job Opening's name (ID)
+    for job in jobs:
+        job['applicant_count'] = frappe.db.count("Job Applicant", {"job_title": job["name"]})
+
+    return jobs
 
 
 

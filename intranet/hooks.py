@@ -84,6 +84,9 @@ app_license = "MIT"
 
 # before_install = "intranet.install.before_install"
 # after_install = "intranet.install.after_install"
+before_app_install = "intranet.utils.before_app_install"
+after_app_install = "intranet.utils.after_app_install"
+
 
 # Uninstallation
 # ------------
