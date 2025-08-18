@@ -1,5 +1,3 @@
-# employee_directory.py
-
 import frappe
 
 def execute(filters=None):
@@ -15,7 +13,8 @@ def execute(filters=None):
         {"label": "Company", "fieldname": "company", "fieldtype": "Data", "width": 150},
     ]
 
-    filters_dict = {"status": ["!=", "Left"]}
+    # ✅ ensure only Active employees
+    filters_dict = {"status": "Active"}
 
     if filters and filters.get("employee_name"):
         filters_dict["employee_name"] = ["like", f"%{filters['employee_name']}%"]

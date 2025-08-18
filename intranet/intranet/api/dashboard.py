@@ -62,26 +62,17 @@ def get_employee_events(start, end):
     filters = {
         "starts_on": ["between", [start, end]]
     }
-    fields = ["subject", "starts_on"]
+    # Add status field here!
+    fields = ["subject", "starts_on", "status"]
 
-    if "Employee" in roles:
-        events = frappe.db.get_list(
-            "Event",
-            filters=filters,
-            fields=fields,
-            order_by="starts_on asc",
-            limit_page_length=50,
-            ignore_permissions=True
-        )
-    else:
-        events = frappe.db.get_list(
-            "Event",
-            filters=filters,
-            fields=fields,
-            order_by="starts_on asc",
-            limit_page_length=50
-        )
-
+    events = frappe.db.get_list(
+        "Event",
+        filters=filters,
+        fields=fields,
+        order_by="starts_on asc",
+        limit_page_length=50,
+        ignore_permissions=True if "Employee" in roles else False
+    )
     return events
 
 
@@ -165,23 +156,63 @@ def get_all_employee_details():
 
 
 
-import frappe
+# import frappe
 
+# @frappe.whitelist()
+# def get_open_jobs_with_applicant_count(limit=10):
+#     # Fetch open job openings
+#     jobs = frappe.get_all("Job Opening",
+#         filters={"status": "Open"},
+#         fields=["name", "job_title", "designation", "department", "posted_on", "employment_type", "location", "closes_on"],
+#         limit_page_length=int(limit),
+#         order_by="posted_on desc"
+#     )
+
+#     # For each job, count applicants where job_title (in Job Applicant) matches job Opening's name (ID)
+#     for job in jobs:
+#         job['applicant_count'] = frappe.db.count("Job Applicant", {"job_title": job["name"]})
+
+#     return jobs
+
+
+import frappe
 @frappe.whitelist()
-def get_open_jobs_with_applicant_count(limit=10):
-    # Fetch open job openings
-    jobs = frappe.get_all("Job Opening",
+def get_open_jobs_basic(limit=10):
+    jobs = frappe.get_all(
+        "Job Opening",
         filters={"status": "Open"},
-        fields=["name", "job_title", "designation", "department", "posted_on", "employment_type", "location", "closes_on"],
+        fields=["name", "job_title", "employment_type", "location", "route", "publish"],  # Added publish field
         limit_page_length=int(limit),
         order_by="posted_on desc"
     )
 
-    # For each job, count applicants where job_title (in Job Applicant) matches job Opening's name (ID)
+    result = []
     for job in jobs:
-        job['applicant_count'] = frappe.db.count("Job Applicant", {"job_title": job["name"]})
+        parts = [job.get('job_title') or ""]
+        if job.get('employment_type'):
+            parts.append(f"💼 {job.get('employment_type')}")
+        if job.get('location'):
+            parts.append(f"📍 {job.get('location')}")
+        combined = " | ".join([p for p in parts if p])
 
-    return jobs
+        # Ensure route starts from root `/`
+        route_path = job.get("route") or f"/app/job-opening/{job.get('name')}"
+        if not route_path.startswith("/"):
+            route_path = "/" + route_path  # force root absolute
 
+        # Make route/link only if 'publish' is checked
+        if job.get("publish"):
+            result.append({
+                "info": combined,
+                "route": route_path     # clickable (front end will treat as link)
+            })
+        else:
+            result.append({
+                "info": combined,
+                "route": None           # not clickable (front end can render as plain text)
+            })
 
-
+    return {
+        "count": len(result),
+        "jobs": result
+    }
