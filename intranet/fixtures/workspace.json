@@ -1,11 +1,11 @@
 [
  {
   "charts": [],
-  "content": "[{\"id\":\"kb3XPLg8lb\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\"><b>Intranet Dashboard</b></span>\",\"col\":12}},{\"id\":\"t3FhJvOg2c\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"3rd\",\"col\":12}},{\"id\":\"nWd2KJPW8l\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"id\":\"snrzfbFr5Y\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"SHJKakmLLf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Supplier\",\"col\":3}},{\"id\":\"CPxEyhaf3G\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"WU4F-HUcIQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leaderboard\",\"col\":3}},{\"id\":\"d_KVM1gsf9\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"JVu8-FJZCu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"JiuSi0ubOg\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting\",\"col\":4}},{\"id\":\"ji2Jlm3Q8i\",\"type\":\"card\",\"data\":{\"card_name\":\"Stock\",\"col\":4}},{\"id\":\"N61oiXpuwK\",\"type\":\"card\",\"data\":{\"card_name\":\"CRM\",\"col\":4}},{\"id\":\"6J0CVl1mPo\",\"type\":\"card\",\"data\":{\"card_name\":\"Data Import and Settings\",\"col\":4}}]",
+  "content": "[{\"id\":\"kb3XPLg8lb\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\"><b>Intranet Dashboard</b></span>\",\"col\":12}},{\"id\":\"2n9Rit7j4c\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Intranet\",\"col\":12}},{\"id\":\"nWd2KJPW8l\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"id\":\"snrzfbFr5Y\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"SHJKakmLLf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Supplier\",\"col\":3}},{\"id\":\"CPxEyhaf3G\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"WU4F-HUcIQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leaderboard\",\"col\":3}},{\"id\":\"d_KVM1gsf9\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"JVu8-FJZCu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"JiuSi0ubOg\",\"type\":\"card\",\"data\":{\"card_name\":\"Accounting\",\"col\":4}},{\"id\":\"ji2Jlm3Q8i\",\"type\":\"card\",\"data\":{\"card_name\":\"Stock\",\"col\":4}},{\"id\":\"N61oiXpuwK\",\"type\":\"card\",\"data\":{\"card_name\":\"CRM\",\"col\":4}},{\"id\":\"6J0CVl1mPo\",\"type\":\"card\",\"data\":{\"card_name\":\"Data Import and Settings\",\"col\":4}}]",
   "custom_blocks": [
    {
-    "custom_block_name": "3rd",
-    "label": "3rd",
+    "custom_block_name": "Intranet",
+    "label": "Intranet",
     "parent": "Home",
     "parentfield": "custom_blocks",
     "parenttype": "Workspace"
@@ -399,7 +399,7 @@
     "type": "Link"
    }
   ],
-  "modified": "2025-08-16 11:43:10.890144",
+  "modified": "2025-08-20 11:54:56.663035",
   "module": "Setup",
   "name": "Home",
   "number_cards": [],
