@@ -20,8 +20,6 @@ def get_public_attendance():
 
 
 
-import frappe
-
 @frappe.whitelist(allow_guest=False)  # only for logged-in users, safer than guests!
 def get_public_tasks():
     task_statuses = ["Open", "Overdue", "Pending Review", "Working"]
@@ -52,7 +50,6 @@ def get_public_tasks():
         )
 
     return tasks
-import frappe
 
 @frappe.whitelist(allow_guest=False)
 def get_employee_events(start, end):
@@ -76,8 +73,40 @@ def get_employee_events(start, end):
     return events
 
 
+from frappe.utils import getdate
 
-import frappe
+@frappe.whitelist(allow_guest=False)
+def get_employee_holidays(start, end):
+    user = frappe.session.user
+    roles = frappe.get_roles(user)
+    if "Employee" not in roles:
+        frappe.throw("Not permitted", frappe.PermissionError)
+
+    # Get user's company (customize this if you store company data differently)
+    employee = frappe.db.get_value("Employee", {"user_id": user}, ["company"], as_dict=True)
+    if not employee:
+        frappe.throw("Associated Employee not found")
+    company_doc = frappe.get_doc("Company", employee["company"])
+    holiday_list_name = company_doc.default_holiday_list
+
+    if not holiday_list_name:
+        return []
+
+    holiday_list = frappe.get_doc("Holiday List", holiday_list_name)
+    holidays = []
+    start_date = getdate(start)
+    end_date = getdate(end)
+
+    for h in holiday_list.holidays:
+        holiday_date = getdate(h.holiday_date)
+        if start_date <= holiday_date <= end_date:
+            holidays.append({
+                "holiday_date": holiday_date,
+                "description": h.description
+            })
+
+    return holidays
+
 
 @frappe.whitelist(allow_guest=False)
 def get_energy_point_logs(start_date=None, end_date=None):
@@ -109,11 +138,6 @@ def get_energy_point_logs(start_date=None, end_date=None):
         )
 
     return logs
-
-
-
-
-import frappe
 
 @frappe.whitelist(allow_guest=False)  # Only logged-in users
 def get_all_employee_details():
