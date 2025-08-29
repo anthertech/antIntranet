@@ -79,24 +79,26 @@ from frappe.utils import getdate
 def get_employee_holidays(start, end):
     user = frappe.session.user
     roles = frappe.get_roles(user)
-    if "Employee" not in roles:
-        frappe.throw("Not permitted", frappe.PermissionError)
 
-    # Get user's company (customize this if you store company data differently)
+    # Allow access if user has Employee or HR role
+    if not ("Employee" in roles or "HR" in roles):
+        return []
+
     employee = frappe.db.get_value("Employee", {"user_id": user}, ["company"], as_dict=True)
     if not employee:
-        frappe.throw("Associated Employee not found")
+        return []
+
     company_doc = frappe.get_doc("Company", employee["company"])
     holiday_list_name = company_doc.default_holiday_list
-
     if not holiday_list_name:
         return []
 
-    holiday_list = frappe.get_doc("Holiday List", holiday_list_name)
-    holidays = []
+    holiday_list = frappe.get_doc("Holiday List", holiday_list_name, ignore_permissions=True)
+
     start_date = getdate(start)
     end_date = getdate(end)
 
+    holidays = []
     for h in holiday_list.holidays:
         holiday_date = getdate(h.holiday_date)
         if start_date <= holiday_date <= end_date:
@@ -179,64 +181,46 @@ def get_all_employee_details():
 
 
 
-
-# import frappe
-
-# @frappe.whitelist()
-# def get_open_jobs_with_applicant_count(limit=10):
-#     # Fetch open job openings
-#     jobs = frappe.get_all("Job Opening",
-#         filters={"status": "Open"},
-#         fields=["name", "job_title", "designation", "department", "posted_on", "employment_type", "location", "closes_on"],
-#         limit_page_length=int(limit),
-#         order_by="posted_on desc"
-#     )
-
-#     # For each job, count applicants where job_title (in Job Applicant) matches job Opening's name (ID)
-#     for job in jobs:
-#         job['applicant_count'] = frappe.db.count("Job Applicant", {"job_title": job["name"]})
-
-#     return jobs
-
-
-import frappe
 @frappe.whitelist()
 def get_open_jobs_basic(limit=10):
+    location_img = '<img src="/assets/intranet/images/loc.png" width="19" height="20" style="vertical-align:middle; border-radius:50%; object-fit:cover;" />'
     jobs = frappe.get_all(
         "Job Opening",
         filters={"status": "Open"},
-        fields=["name", "job_title", "employment_type", "location", "route", "publish"],  # Added publish field
+        fields=["name", "job_title", "employment_type", "location", "route", "publish"],
         limit_page_length=int(limit),
         order_by="posted_on desc"
     )
-
     result = []
     for job in jobs:
         parts = [job.get('job_title') or ""]
         if job.get('employment_type'):
-            parts.append(f"💼 {job.get('employment_type')}")
+            parts.append(
+                f'<span style="display:inline-block; background:#e4f5e9; color:#16794c; border-radius:4px; padding:2px 8px; font-size:12px; margin-left:8px;">{job.get("employment_type")}</span>'
+            )
         if job.get('location'):
-            parts.append(f"📍 {job.get('location')}")
-        combined = " | ".join([p for p in parts if p])
-
-        # Ensure route starts from root `/`
+            parts.append(
+                f'<span style="display:inline-flex;  margin-left:8px;">'
+                f'<span style="vertical-align:middle;">{location_img}</span>'
+                f'<span style="background:#fff1e7; color:#bd3e0c; border-radius:4px; padding:2px 8px; font-size:12px; margin-left:4px;">{job.get("location")}</span>'
+                f'</span>'
+            )
+        combined = " ".join([p for p in parts if p])
         route_path = job.get("route") or f"/app/job-opening/{job.get('name')}"
         if not route_path.startswith("/"):
-            route_path = "/" + route_path  # force root absolute
-
-        # Make route/link only if 'publish' is checked
+            route_path = "/" + route_path
         if job.get("publish"):
             result.append({
                 "info": combined,
-                "route": route_path     # clickable (front end will treat as link)
+                "route": route_path
             })
         else:
             result.append({
                 "info": combined,
-                "route": None           # not clickable (front end can render as plain text)
+                "route": None
             })
-
     return {
         "count": len(result),
         "jobs": result
     }
+
